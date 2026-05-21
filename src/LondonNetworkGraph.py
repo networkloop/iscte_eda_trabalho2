@@ -1,4 +1,4 @@
-from src.Graph import Vertex, Edge, Graph
+from Graph import Vertex, Edge, Graph
 import csv
 
 class Station(Vertex):
@@ -26,7 +26,7 @@ class LondonNetworkGraph(Graph):
     def __init__(self):
         super().__init__()
 
-    def stations(self, file_path = include.stations.csv):
+    def stations(self, file_path = "include/stations.csv"):
         stations_informations = []
         with open(file_path, newline='', encoding="utf-8") as f:
             reader = csv.reader(f)
@@ -36,7 +36,7 @@ class LondonNetworkGraph(Graph):
                     stations_informations.append(row)
         return stations_informations
 
-    def connections(self, file_path = include.connections.csv):
+    def connections(self, file_path = "include/connections.csv"):
         connections_informations = []
         with open(file_path, newline='', encoding="utf-8") as f:
             reader = csv.reader(f)
@@ -63,4 +63,4 @@ class LondonNetworkGraph(Graph):
         return connections_line
 
     def mean_degree(self):
-        return (n_edges(self)/n_stations(self))
+        return (self.n_edges()/self.n_stations())
