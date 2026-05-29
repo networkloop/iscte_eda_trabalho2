@@ -1,4 +1,5 @@
-import src.LondonNetworkGraph
+from src.LondonNetworkGraph import LondonNetworkGraph
 
 if __name__ == "__main__":
-    graph = src.LondonNetworkGraph.LondonNetworkGraph()
+    graph = LondonNetworkGraph()
+    graph.visualize()
