@@ -1,6 +1,9 @@
 from Graph import Vertex, Edge, Graph
 import csv
-
+import haversine as hs
+import matplotlib.pyplot as plt
+import networkx as nx
+    
 class Station(Vertex):
 
     def __init__(self, station, position):
@@ -21,6 +24,15 @@ class EdgeLine(Edge):
 
     def other_station(self):
         return self.get_vs()
+    
+def distance_weight(p1, p2):
+    return hs.haversine(p1, p2, unit=hs.Unit.KILOMETERS)
+
+def time_weight(p1, p2, speed = 30, sinuous_factor = 1.2):
+    distance = distance_weight(p1, p2)
+    average_speed = speed
+    return distance / average_speed * sinuous_factor
+
 
 class LondonNetworkGraph(Graph):
     def __init__(self):
@@ -64,3 +76,31 @@ class LondonNetworkGraph(Graph):
 
     def mean_degree(self):
         return (self.n_edges()/self.n_stations())
+    
+    def mean_weight(self, weight_type):
+        stations = self.stations()
+        distance = 0
+        total_weight = 0
+        for row in stations:
+            if row in stations:
+                p1, p2 = float(row[1]), float(row[2])
+                if weight_type == "distance":
+                    distance = distance_weight(p1, p2)
+                elif weight_type == "time":
+                    distance = time_weight(p1, p2)
+                total_weight += distance
+        avg_weight = total_weight / self.n_edges()
+        return avg_weight
+    
+    def visualize(self, metro):
+        graph = nx.Graph()
+        for stations in metro.stations():
+            graph.add_node(stations[0:3])
+            for connections in metro.connections():
+                graph.add_edge(*connections, line=connections[2])
+        nx.draw(graph, with_labels=True)
+        plt.title("London Metro Network")
+        plt.show()
+
+metro = LondonNetworkGraph()
+metro.visualize(metro)
