@@ -1,9 +1,35 @@
+<<<<<<< HEAD
 from Graph import Vertex, Edge, Graph
 import csv
 import haversine as hs
 import matplotlib.pyplot as plt
 import networkx as nx
     
+=======
+import csv
+import networkx as nx
+import folium
+import webbrowser
+import math
+
+def cost_uniform(station_one, station_two, line=None):
+    return 1
+
+def cost_haversine(station_one, station_two, line=None):
+
+    lat1, lon1 = math.radians(float(station_one[1])), math.radians(float(station_one[2]))
+    lat2, lon2 = math.radians(float(station_two[1])), math.radians(float(station_two[2]))
+
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+
+    a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
+    angle = 2 * math.asin(math.sqrt(a))
+
+    R = 6371
+    return R * angle
+
+>>>>>>> b09c5273242e2a844d42181922b4d7be077d5331
 class Station(Vertex):
 
     def __init__(self, station, position):
@@ -24,6 +50,7 @@ class EdgeLine(Edge):
 
     def other_station(self):
         return self.get_vs()
+<<<<<<< HEAD
     
 def distance_weight(p1, p2):
     return hs.haversine(p1, p2, unit=hs.Unit.KILOMETERS)
@@ -33,6 +60,32 @@ def time_weight(p1, p2, speed = 30, sinuous_factor = 1.2):
     average_speed = speed
     return distance / average_speed * sinuous_factor
 
+=======
+
+def search_station(station_id, stations=None):
+    upper_limit = len(stations) - 1
+    lower_limit = 0
+
+    while lower_limit <= upper_limit:
+        pointer = (upper_limit + lower_limit) // 2
+        if int(stations[pointer][0]) == int(station_id):
+            return stations[pointer]
+        elif int(stations[pointer][0]) > int(station_id):
+            upper_limit = pointer - 1
+        else:
+            lower_limit = pointer + 1
+
+    return None
+
+def line_color(connection, lines="include/lines.csv"):
+    with open(lines, newline='', encoding="utf-8") as f:
+        reader = csv.reader(f)
+        next(reader)
+        for row in reader:
+            if row and int(row[0]) == int(connection[2]):
+                return row[2]
+    return None
+>>>>>>> b09c5273242e2a844d42181922b4d7be077d5331
 
 class LondonNetworkGraph(Graph):
     def __init__(self):
@@ -75,6 +128,7 @@ class LondonNetworkGraph(Graph):
         return connections_line
 
     def mean_degree(self):
+<<<<<<< HEAD
         return (self.n_edges()/self.n_stations())
     
     def mean_weight(self, weight_type):
@@ -104,3 +158,45 @@ class LondonNetworkGraph(Graph):
 
 metro = LondonNetworkGraph()
 metro.visualize(metro)
+=======
+        return self.n_edges()/self.n_stations()
+
+    def mean_weight(self, weight_type):
+        stations_sorted = sorted(self.stations(), key=lambda s: int(s[0]))
+        total_weight = 0
+        for connection in self.connections():
+            station_one = search_station(connection[0], stations_sorted)
+            station_two = search_station(connection[1], stations_sorted)
+            total_weight += weight_type(station_one, station_two,)
+        return total_weight/self.n_edges()
+
+    def visualize(self):
+        m = folium.Map(location=[51.5074, -0.1278], zoom_start=12, tiles="CartoDB positron")
+        stations_sorted = sorted(self.stations(), key=lambda s: int(s[0]))
+
+        for connection in self.connections():
+            station_one = search_station(connection[0], stations_sorted)
+            station_two = search_station(connection[1], stations_sorted)
+            folium.PolyLine(
+                locations=[[float(station_one[1]), float(station_one[2])],
+                           [float(station_two[1]), float(station_two[2])]],
+                color= '#' + line_color(connection),
+                weight=3
+            ).add_to(m)
+
+        for station in stations_sorted:
+            folium.CircleMarker(
+                location=[station[1], station[2]],
+                radius=4,
+                color="red",
+                fill=True,
+                fill_color="white",
+                fill_opacity=1,
+                popup = station[3],
+                tooltip=station[3],
+            ).add_to(m)
+
+        m.save("map.html")
+        webbrowser.open("map.html")
+        return m
+>>>>>>> b09c5273242e2a844d42181922b4d7be077d5331
