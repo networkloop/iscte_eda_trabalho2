@@ -1,7 +1,7 @@
 import csv
 import folium
 import webbrowser
-from LondonNetworkGraph import distance_weight as cost_haversine
+from .LondonNetworkGraph import uniform_weight, distance_weight, time_weight
 
 class UnionFind:
     def __init__(self, elements):
@@ -26,7 +26,7 @@ class UnionFind:
 
 def kruskal(stations_path='include/stations.csv',
             connections_path='include/connections.csv',
-            cost_function=cost_haversine):
+            weight_function=uniform_weight):
 
     stations = {}
     with open(stations_path, newline='', encoding='utf-8') as f:
@@ -48,7 +48,7 @@ def kruskal(stations_path='include/stations.csv',
                 line = row[2]
                 station_one = stations[id_one]
                 station_two = stations[id_two]
-                weight = cost_function(station_one, station_two, line)
+                weight = weight_function(station_one, station_two)
                 weighted_connections.append((id_one, id_two, line, weight))
                 total_original_cost += weight
 

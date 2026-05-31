@@ -1,16 +1,19 @@
-from Graph import Vertex, Edge, Graph
-import csv
+from .Graph import Vertex, Edge, Graph
 import haversine as hs
-import matplotlib.pyplot as plt
-import networkx as nx
 import csv
-import networkx as nx
 import folium
 import webbrowser
-import math
 
-def cost_uniform(station_one, station_two, line=None):
+def uniform_weight(station_one, station_two):
     return 1
+
+def distance_weight(station_one, station_two):
+    return hs.haversine((float(station_one[1]),float(station_one[2])),
+                        (float(station_two[1]), float(station_two[2])), unit=hs.Unit.KILOMETERS)
+
+def time_weight(station_one, station_two, speed = 30, sinuous_factor = 1.2):
+    distance = distance_weight(station_one, station_two)
+    return distance / speed * sinuous_factor
 
 class Station(Vertex):
 
@@ -32,15 +35,6 @@ class EdgeLine(Edge):
 
     def other_station(self):
         return self.get_vs()
-    
-def distance_weight(p1, p2):
-    return hs.haversine(p1, p2, unit=hs.Unit.KILOMETERS)
-
-def time_weight(p1, p2, speed = 30, sinuous_factor = 1.2):
-    distance = distance_weight(p1, p2)
-    average_speed = speed
-    return distance / average_speed * sinuous_factor
-
 
 def search_station(station_id, stations=None):
     upper_limit = len(stations) - 1
