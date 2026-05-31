@@ -1,11 +1,8 @@
-<<<<<<< HEAD
 from Graph import Vertex, Edge, Graph
 import csv
 import haversine as hs
 import matplotlib.pyplot as plt
 import networkx as nx
-    
-=======
 import csv
 import networkx as nx
 import folium
@@ -15,21 +12,6 @@ import math
 def cost_uniform(station_one, station_two, line=None):
     return 1
 
-def cost_haversine(station_one, station_two, line=None):
-
-    lat1, lon1 = math.radians(float(station_one[1])), math.radians(float(station_one[2]))
-    lat2, lon2 = math.radians(float(station_two[1])), math.radians(float(station_two[2]))
-
-    dlat = lat2 - lat1
-    dlon = lon2 - lon1
-
-    a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
-    angle = 2 * math.asin(math.sqrt(a))
-
-    R = 6371
-    return R * angle
-
->>>>>>> b09c5273242e2a844d42181922b4d7be077d5331
 class Station(Vertex):
 
     def __init__(self, station, position):
@@ -50,7 +32,6 @@ class EdgeLine(Edge):
 
     def other_station(self):
         return self.get_vs()
-<<<<<<< HEAD
     
 def distance_weight(p1, p2):
     return hs.haversine(p1, p2, unit=hs.Unit.KILOMETERS)
@@ -60,7 +41,6 @@ def time_weight(p1, p2, speed = 30, sinuous_factor = 1.2):
     average_speed = speed
     return distance / average_speed * sinuous_factor
 
-=======
 
 def search_station(station_id, stations=None):
     upper_limit = len(stations) - 1
@@ -85,7 +65,6 @@ def line_color(connection, lines="include/lines.csv"):
             if row and int(row[0]) == int(connection[2]):
                 return row[2]
     return None
->>>>>>> b09c5273242e2a844d42181922b4d7be077d5331
 
 class LondonNetworkGraph(Graph):
     def __init__(self):
@@ -128,37 +107,6 @@ class LondonNetworkGraph(Graph):
         return connections_line
 
     def mean_degree(self):
-<<<<<<< HEAD
-        return (self.n_edges()/self.n_stations())
-    
-    def mean_weight(self, weight_type):
-        stations = self.stations()
-        distance = 0
-        total_weight = 0
-        for row in stations:
-            if row in stations:
-                p1, p2 = float(row[1]), float(row[2])
-                if weight_type == "distance":
-                    distance = distance_weight(p1, p2)
-                elif weight_type == "time":
-                    distance = time_weight(p1, p2)
-                total_weight += distance
-        avg_weight = total_weight / self.n_edges()
-        return avg_weight
-    
-    def visualize(self, metro):
-        graph = nx.Graph()
-        for stations in metro.stations():
-            graph.add_node(stations[0:3])
-            for connections in metro.connections():
-                graph.add_edge(*connections, line=connections[2])
-        nx.draw(graph, with_labels=True)
-        plt.title("London Metro Network")
-        plt.show()
-
-metro = LondonNetworkGraph()
-metro.visualize(metro)
-=======
         return self.n_edges()/self.n_stations()
 
     def mean_weight(self, weight_type):
@@ -199,4 +147,3 @@ metro.visualize(metro)
         m.save("map.html")
         webbrowser.open("map.html")
         return m
->>>>>>> b09c5273242e2a844d42181922b4d7be077d5331
