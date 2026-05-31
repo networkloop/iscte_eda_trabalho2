@@ -1,7 +1,7 @@
 import csv
 import folium
 import webbrowser
-from src.LondonNetworkGraph import cost_uniform, cost_haversine
+from LondonNetworkGraph import distance_weight as cost_haversine
 
 class UnionFind:
     def __init__(self, elements):
