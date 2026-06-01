@@ -48,7 +48,7 @@ def kruskal(stations_path='include/stations.csv',
                 line = row[2]
                 station_one = stations[id_one]
                 station_two = stations[id_two]
-                weight = weight_function(station_one, station_two)
+                weight = weight_function(station_one, station_two, line)
                 weighted_connections.append((id_one, id_two, line, weight))
                 total_original_cost += weight
 

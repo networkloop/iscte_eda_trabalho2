@@ -4,16 +4,24 @@ import csv
 import folium
 import webbrowser
 
-def uniform_weight(station_one, station_two):
+speeds = {}
+with open("include/speeds.csv", newline='', encoding="utf-8") as f:
+    reader = csv.reader(f)
+    next(reader)
+    for row in reader:
+        speeds[row[0]] = row[2]
+
+
+def uniform_weight(station_one = None, station_two = None,line = None):
     return 1
 
-def distance_weight(station_one, station_two):
+def distance_weight(station_one, station_two, line = None):
     return hs.haversine((float(station_one[1]),float(station_one[2])),
                         (float(station_two[1]), float(station_two[2])), unit=hs.Unit.KILOMETERS)
 
-def time_weight(station_one, station_two, speed = 30, sinuous_factor = 1.2):
+def time_weight(station_one, station_two, line, sinuous_factor = 1.2):
     distance = distance_weight(station_one, station_two)
-    return distance / speed * sinuous_factor
+    return distance / float(speeds[line]) * sinuous_factor
 
 class Station(Vertex):
 
