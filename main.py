@@ -17,6 +17,34 @@ if __name__ == "__main__":
         print(f"  Linha {line}: {count}")
     graph.visualize()
 
+    print("\n=== Cenários Dijkstra ===")
+    cenarios = [
+        {"nome": "Trajeto Curto", "origem": "1", "destino": "73"},
+        {"nome": "Trajeto Longo", "origem": "271", "destino": "267"},
+        {"nome": "Transbordos", "origem": "11", "destino": "273"}
+    ]
+    testes = [
+        {"nome": "Custo Uniforme", "weight_function": uniform_weight, "penalty_factor": 0},
+        {"nome": "Distância (Sem Penalização)", "weight_function": distance_weight, "penalty_factor": 0},
+        {"nome": "Distância (Com Penalização)", "weight_function": distance_weight, "penalty_factor": 5},
+        {"nome": "Tempo (Sem Penalização)", "weight_function": time_weight, "penalty_factor": 0},
+        {"nome": "Tempo (Com Penalização)", "weight_function": time_weight, "penalty_factor": 5}
+    ]
+    penalty_factor = 5
+    for cenario in cenarios:
+        print(f"\n--------------------------------------------------")
+        print(f"CENÁRIO: {cenario['nome']} ({cenario['origem']} -> {cenario['destino']})")
+        print(f"--------------------------------------------------")
+
+        file_name = cenario['nome'].lower().replace(' ', '_')
+
+        for teste in testes:
+            path, custo, mudancas = dijkstra(graph, cenario['origem'], cenario['destino'], teste['weight_function'], penalty_factor=teste['penalty_factor'])
+            print(f"[{teste['nome']:<12}] Estações: {len(path):<3} | Custo: {custo:<8.2f} | Mudanças: {mudancas}")
+            nome_ficheiro = f"mapa_dijkstra_{file_name}_{teste['nome'].lower()}.html"
+            visualize(path, output_path=nome_ficheiro)
+            
+
     graph_kruskal_uniform = kruskal(weight_function=uniform_weight)
     graph_kruskal_distance = kruskal(weight_function=distance_weight)
     graph_kruskal_time = kruskal(weight_function=time_weight)
@@ -43,33 +71,3 @@ if __name__ == "__main__":
     visualize_mst(graph_kruskal_distance['kruskal_connections'], output_path='map_kruskal_distance.html', color='#1a6e3c')
     visualize_mst(graph_kruskal_time['kruskal_connections'], output_path='map_kruskal_time.html', color='#4B0082')
 
-    print("\n=== Cenários Dijkstra ===")
-    cenarios = [
-        {"nome": "Trajeto Curto", "origem": "1", "destino": "73"},
-        {"nome": "Trajeto Longo", "origem": "271", "destino": "267"},
-        {"nome": "Transbordos", "origem": "11", "destino": "273"}
-    ]
-    testes = [
-        {"nome": "Custo Uniforme", "weight_function": uniform_weight, "penalty_factor": 0},
-        {"nome": "Distância (Sem Penalização)", "weight_function": distance_weight, "penalty_factor": 0},
-        {"nome": "Distância (Com Penalização)", "weight_function": distance_weight, "penalty_factor": 5}
-    ]
-    penalty_factor = 5
-    for cenario in cenarios:
-        print(f"\n--------------------------------------------------")
-        print(f"CENÁRIO: {cenario['nome']} ({cenario['origem']} -> {cenario['destino']})")
-        print(f"--------------------------------------------------")
-
-        file_name = cenario['nome'].lower().replace(' ', '_')
-
-        for teste in testes:
-            path, custo, mudancas = dijkstra(graph, cenario['origem'], cenario['destino'], teste['weight_function'], penalty_factor=teste['penalty_factor'])
-            print(f"[{teste['nome']:<12}] Estações: {len(path):<3} | Custo: {custo:<8.2f} | Mudanças: {mudancas}")
-            nome_ficheiro = f"mapa_dijkstra_{file_name}_{teste['nome'].lower()}.html"
-            visualize(path, output_path=nome_ficheiro)
-
-        
-
-    visualize_mst(graph_kruskal_uniform['kruskal_connections'], output_path='map_kruskal_uniform.html')
-    visualize_mst(graph_kruskal_distance['kruskal_connections'], output_path='map_kruskal_distance.html', color='#1a6e3c')
-    visualize_mst(graph_kruskal_time['kruskal_connections'], output_path='map_kruskal_time.html', color='#4B0082')
