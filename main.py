@@ -1,7 +1,6 @@
-from src.LondonNetworkGraph import LondonNetworkGraph
+from src.LondonNetworkGraph import LondonNetworkGraph, uniform_weight, distance_weight, time_weight
+from src.Dijkstra import dijkstra, dijkstra_nx, visualize
 from src.Kruskal import kruskal, visualize_mst
-from src.LondonNetworkGraph import uniform_weight, distance_weight, time_weight
-from src.Dijkstra import dijkstra, visualize
 
 if __name__ == "__main__":
     graph = LondonNetworkGraph()
@@ -21,9 +20,8 @@ if __name__ == "__main__":
 
     print("\n=== Cenários Dijkstra ===")
     cenarios = [
-        {"nome": "Trajeto Curto", "origem": "1", "destino": "73"},
-        {"nome": "Trajeto Longo", "origem": "271", "destino": "267"},
-        {"nome": "Transbordos", "origem": "11", "destino": "273"}
+        {"nome": "Trajeto Curto", "origem": "74", "destino": "247"},
+        {"nome": "Trajeto Longo", "origem": "271", "destino": "267"}
     ]
     testes = [
         {"nome": "Custo Uniforme", "weight_function": uniform_weight, "penalty_factor": 0},
@@ -32,6 +30,10 @@ if __name__ == "__main__":
         {"nome": "Tempo (Sem Penalização)", "weight_function": time_weight, "penalty_factor": 0},
         {"nome": "Tempo (Com Penalização)", "weight_function": time_weight, "penalty_factor": 5}
     ]
+    station_data = {}
+    for row in graph.stations():
+        station_data[row[0]] = row
+
     penalty_factor = 5
     for cenario in cenarios:
         print(f"\n--------------------------------------------------")
@@ -39,13 +41,42 @@ if __name__ == "__main__":
         print(f"--------------------------------------------------")
 
         file_name = cenario['nome'].lower().replace(' ', '_')
+        custo_para_validar = 0
 
         for teste in testes:
             path, custo, mudancas = dijkstra(graph, cenario['origem'], cenario['destino'], teste['weight_function'], penalty_factor=teste['penalty_factor'])
-            print(f"[{teste['nome']:<12}] Estações: {len(path):<3} | Custo: {custo:<8.2f} | Mudanças: {mudancas}")
+            distancia_real = 0
+            tempo_real = 0
+            if path:
+                for i in range(len(path)-1):
+                    station_one_id = path[i]
+                    station_two_id = path[i+1]
+                    station_one = station_data[station_one_id]
+                    station_two = station_data[station_two_id]
+                    current_line = None
+                    for line in graph._graph[station_one_id]:
+                        if line.opposite(station_one_id) == station_two_id:
+                            current_line = line.get_info()
+                            break
+                    distancia_real += distance_weight(station_one, station_two, current_line) 
+                    tempo_real += time_weight(station_one, station_two, current_line) 
+            if teste['nome'] == "Distância (Sem Penalização)":
+                custo_para_validar = custo
+            print(f"=== {teste['nome']} ===")
+            print(f"Estações      : {len(path)}")
+            print(f"Transbordos   : {mudancas}")
+            print(f"Custo na rede : {custo:.4f} (com penalizações aplicadas)")
+            print(f"Estatísticas  : {distancia_real:.4f} km | {tempo_real:.4f} h\n")
             nome_ficheiro = f"mapa_dijkstra_{file_name}_{teste['nome'].lower()}.html"
             visualize(path, output_path=nome_ficheiro)
             
+
+        print("\n=== Comparação com NetworkX (Distância Sem Penalização) ===")
+        path_nx, custo_nx = dijkstra_nx(graph, cenario['origem'], cenario['destino'], distance_weight)
+        
+        print(f"[NetworkX Nativo]   Estações: {len(path_nx):<3} | Custo: {custo_nx:<8.4f}")
+        if round(custo_nx, 4) == round(custo_para_validar, 4):
+            print(">> O resultado do Dijkstra implementado é consistente com o NetworkX.")
 
     graph_kruskal_uniform = kruskal(weight_function=uniform_weight)
     graph_kruskal_distance = kruskal(weight_function=distance_weight)

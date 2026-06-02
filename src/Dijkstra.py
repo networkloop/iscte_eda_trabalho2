@@ -1,7 +1,8 @@
-from .LondonNetworkGraph import uniform_weight, distance_weight, time_weight, line_color
+from .LondonNetworkGraph import line_color
 import csv
 import folium
-import webbrowser 
+import webbrowser
+import networkx as nx
 
 def dijkstra(graph, start_station, end_station, weight_function, penalty_factor=0):
     stations = {}
@@ -60,6 +61,27 @@ def dijkstra(graph, start_station, end_station, weight_function, penalty_factor=
             current_station = best_previous_station[current_station]
         path.reverse()
     return path, best_value[end_station], line_changes
+
+
+def dijkstra_nx(graph, start_station, end_station, weight_function):
+    g = nx.Graph()
+    stations = {}
+    for row in graph.stations():
+        stations[row[0]] = row
+        g.add_node(row[0], name=row[3])
+    for connection in graph.connections():
+        station_one = connection[0]
+        station_two = connection[1]
+        line = connection[2]
+        cost = weight_function(stations[station_one], stations[station_two], line)
+        g.add_edge(station_one, station_two, weight=cost, line=line)
+    try:
+        path = nx.dijkstra_path(g, start_station, end_station, weight='weight')
+        cost = nx.dijkstra_path_length(g, start_station, end_station, weight='weight')
+    except nx.NetworkXNoPath:
+        path = []
+        cost = float('inf')
+    return path, cost
 
 def visualize(path,
                 stations_path='include/stations.csv',
