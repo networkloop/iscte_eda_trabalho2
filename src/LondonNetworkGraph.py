@@ -4,12 +4,12 @@ import csv
 import folium
 import webbrowser
 
-# speeds = {}
-# with open("include/speeds.csv", newline='', encoding="utf-8") as f:
-#     reader = csv.reader(f)
-#     next(reader)
-#     for row in reader:
-#         speeds[row[0]] = row[2]
+speeds = {}
+with open("include/speeds.csv", newline='', encoding="utf-8") as f:
+    reader = csv.reader(f)
+    next(reader)
+    for row in reader:
+        speeds[row[0]] = row[2]
 
 
 def uniform_weight(station_one = None, station_two = None,line = None):
@@ -21,7 +21,7 @@ def distance_weight(station_one, station_two, line = None):
 
 def time_weight(station_one, station_two, line, sinuous_factor = 1.2):
     distance = distance_weight(station_one, station_two)
-    return distance / 35 * sinuous_factor
+    return distance / float(speeds[line]) * sinuous_factor
 
 class Station(Vertex):
 
