@@ -4,12 +4,12 @@ import csv
 import folium
 import webbrowser
 
-speeds = {}
-with open("include/speeds.csv", newline='', encoding="utf-8") as f:
-    reader = csv.reader(f)
-    next(reader)
-    for row in reader:
-        speeds[row[0]] = row[2]
+# speeds = {}
+# with open("include/speeds.csv", newline='', encoding="utf-8") as f:
+#     reader = csv.reader(f)
+#     next(reader)
+#     for row in reader:
+#         speeds[row[0]] = row[2]
 
 
 def uniform_weight(station_one = None, station_two = None,line = None):
@@ -21,7 +21,7 @@ def distance_weight(station_one, station_two, line = None):
 
 def time_weight(station_one, station_two, line, sinuous_factor = 1.2):
     distance = distance_weight(station_one, station_two)
-    return distance / float(speeds[line]) * sinuous_factor
+    return distance / 35 * sinuous_factor
 
 class Station(Vertex):
 
@@ -71,6 +71,13 @@ def line_color(connection, lines="include/lines.csv"):
 class LondonNetworkGraph(Graph):
     def __init__(self):
         super().__init__()
+        self.__build_graph()
+
+    def __build_graph(self):
+        for station in self.stations():
+            self.add_vertex(station[0], station)
+        for connection in self.connections():
+            self.add_edge(connection[0], connection[1], weight=connection[2])
 
     def stations(self, file_path = "include/stations.csv"):
         stations_informations = []
