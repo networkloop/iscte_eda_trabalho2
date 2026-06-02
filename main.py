@@ -11,10 +11,12 @@ if __name__ == "__main__":
     print(f"Número de ligações: {graph.n_edges()}")
     print(f"Grau médio: {graph.mean_degree():.4f}")
     print(f"Peso médio (Uniforme): {graph.mean_weight(uniform_weight):.4f}")
-    print(f"Peso médio (Haversine): {graph.mean_weight(distance_weight):.4f}")
+    print(f"Peso médio (Distância): {graph.mean_weight(distance_weight):.4f} km")
+    print(f"Peso médio (Tempo): {graph.mean_weight(time_weight):.4f} h")
     print("Ligações por linha:")
     for line, count in graph.n_edges_line().items():
         print(f"  Linha {line}: {count}")
+
     graph.visualize()
 
     print("\n=== Cenários Dijkstra ===")
@@ -58,14 +60,14 @@ if __name__ == "__main__":
     print("\n=== Kruskal Distance ===")
     print(f"Arestas na rede original: {graph_kruskal_distance['n_original_connections']}")
     print(f"Arestas na MST: {graph_kruskal_distance['n_kruskal_connections']}")
-    print(f"Custo total da rede: {graph_kruskal_distance['total_original_cost']:.4f}")
-    print(f"Custo total da MST: {graph_kruskal_distance['total_cost']:.4f}")
+    print(f"Custo total da rede: {graph_kruskal_distance['total_original_cost']:.4f} km")
+    print(f"Custo total da MST: {graph_kruskal_distance['total_cost']:.4f} km")
 
     print("\n=== Kruskal Time ===")
     print(f"Arestas na rede original: {graph_kruskal_time['n_original_connections']}")
     print(f"Arestas na MST: {graph_kruskal_time['n_kruskal_connections']}")
-    print(f"Custo total da rede: {graph_kruskal_time['total_original_cost']:.4f}")
-    print(f"Custo total da MST: {graph_kruskal_time['total_cost']:.4f}")
+    print(f"Custo total da rede: {graph_kruskal_time['total_original_cost']:.4f} h")
+    print(f"Custo total da MST: {graph_kruskal_time['total_cost']:.4f} h")
 
     visualize_mst(graph_kruskal_uniform['kruskal_connections'], output_path='map_kruskal_uniform.html')
     visualize_mst(graph_kruskal_distance['kruskal_connections'], output_path='map_kruskal_distance.html', color='#1a6e3c')

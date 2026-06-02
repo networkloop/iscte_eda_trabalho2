@@ -124,7 +124,7 @@ class LondonNetworkGraph(Graph):
         for connection in self.connections():
             station_one = search_station(connection[0], stations_sorted)
             station_two = search_station(connection[1], stations_sorted)
-            total_weight += weight_type(station_one, station_two,)
+            total_weight += weight_type(station_one, station_two,connection[2])
         return total_weight/self.n_edges()
 
     def visualize(self):
