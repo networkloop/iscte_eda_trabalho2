@@ -2,6 +2,7 @@ import csv
 import folium
 import webbrowser
 from .LondonNetworkGraph import uniform_weight, distance_weight, time_weight
+# v1.0
 
 class UnionFind:
     def __init__(self, elements):

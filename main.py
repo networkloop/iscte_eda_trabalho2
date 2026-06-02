@@ -2,6 +2,7 @@ from src.LondonNetworkGraph import LondonNetworkGraph, uniform_weight, distance_
 from src.Dijkstra import dijkstra, dijkstra_nx, visualize
 from src.Kruskal import kruskal, visualize_mst
 import time
+# v1.0
 
 if __name__ == "__main__":
     graph = LondonNetworkGraph()

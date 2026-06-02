@@ -3,6 +3,7 @@ import haversine as hs
 import csv
 import folium
 import webbrowser
+# v1.0
 
 speeds = {}
 with open("include/speeds.csv", newline='', encoding="utf-8") as f:

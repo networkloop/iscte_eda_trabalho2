@@ -3,6 +3,7 @@ import csv
 import folium
 import webbrowser
 import networkx as nx
+# v1.0
 
 def dijkstra(graph, start_station, end_station, weight_function, penalty_factor=0):
     stations = {}

@@ -1,4 +1,5 @@
 # Metro de Londres - Algoritmos de procura
+v1.0
 
 Este trabalho tem como objetivo representar, analisar e visualizar a rede do metro de Londres
 utilizando grafos. Pretende-se que os estudantes desenvolvam uma solução em Python que
