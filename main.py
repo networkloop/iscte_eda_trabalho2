@@ -39,9 +39,9 @@ if __name__ == "__main__":
     print(f"Custo total da rede: {graph_kruskal_time['total_original_cost']:.4f}")
     print(f"Custo total da MST: {graph_kruskal_time['total_cost']:.4f}")
 
-    visualize_mst(graph_kruskal_uniform['mst_connections'], output_path='map_kruskal_uniform.html')
-    visualize_mst(graph_kruskal_distance['mst_connections'], output_path='map_kruskal_distance.html', color='#1a6e3c')
-    visualize_mst(graph_kruskal_time['mst_connections'], output_path='map_kruskal_time.html', color='#4B0082')
+    visualize_mst(graph_kruskal_uniform['kruskal_connections'], output_path='map_kruskal_uniform.html')
+    visualize_mst(graph_kruskal_distance['kruskal_connections'], output_path='map_kruskal_distance.html', color='#1a6e3c')
+    visualize_mst(graph_kruskal_time['kruskal_connections'], output_path='map_kruskal_time.html', color='#4B0082')
 
     print("\n=== Cenários Dijkstra ===")
     cenarios = [
