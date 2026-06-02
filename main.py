@@ -1,6 +1,7 @@
 from src.LondonNetworkGraph import LondonNetworkGraph, uniform_weight, distance_weight, time_weight
 from src.Dijkstra import dijkstra, dijkstra_nx, visualize
 from src.Kruskal import kruskal, visualize_mst
+import time
 
 if __name__ == "__main__":
     graph = LondonNetworkGraph()
@@ -44,7 +45,10 @@ if __name__ == "__main__":
         custo_para_validar = 0
 
         for teste in testes:
+            start_time = time.perf_counter()
             path, custo, mudancas = dijkstra(graph, cenario['origem'], cenario['destino'], teste['weight_function'], penalty_factor=teste['penalty_factor'])
+            end_time = time.perf_counter()
+            execution_time_ms = (end_time - start_time) * 1000
             distancia_real = 0
             tempo_real = 0
             if path:
@@ -66,15 +70,22 @@ if __name__ == "__main__":
             print(f"Estações      : {len(path)}")
             print(f"Transbordos   : {mudancas}")
             print(f"Custo na rede : {custo:.4f} (com penalizações aplicadas)")
+            print(f"Tempo de Exec.: {execution_time_ms:.4f} ms")
             print(f"Estatísticas  : {distancia_real:.4f} km | {tempo_real:.4f} h\n")
             nome_ficheiro = f"mapa_dijkstra_{file_name}_{teste['nome'].lower()}.html"
             visualize(path, output_path=nome_ficheiro)
             
 
         print("\n=== Comparação com NetworkX (Distância Sem Penalização) ===")
+        start_time_nx = time.perf_counter()
         path_nx, custo_nx = dijkstra_nx(graph, cenario['origem'], cenario['destino'], distance_weight)
-        
-        print(f"[NetworkX Nativo]   Estações: {len(path_nx):<3} | Custo: {custo_nx:<8.4f}")
+        end_time_nx = time.perf_counter()
+        execution_time_nx_ms = (end_time_nx - start_time_nx) * 1000
+
+        print(f"=== NetworkX ===")
+        print(f"Estações      : {len(path_nx)}")
+        print(f"Custo do Alg. : {custo_nx:.4f}")
+        print(f"Tempo de Exec.: {execution_time_nx_ms:.4f} ms")
         if round(custo_nx, 4) == round(custo_para_validar, 4):
             print(">> O resultado do Dijkstra implementado é consistente com o NetworkX.")
 
