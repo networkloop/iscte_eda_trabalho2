@@ -54,21 +54,21 @@ def kruskal(stations_path='include/stations.csv',
 
     weighted_connections.sort(key=lambda e: e[3])
     union_find = UnionFind(stations.keys())
-    mst_connections = []
+    kruskal_connections = []
     total_cost = 0
     n_stations = len(stations)
 
     for id_one, id_two, line, weight in weighted_connections:
         if union_find.union(id_one, id_two):
-            mst_connections.append((id_one, id_two, line, weight))
+            kruskal_connections.append((id_one, id_two, line, weight))
             total_cost += weight
-            if len(mst_connections) == n_stations - 1:
+            if len(kruskal_connections) == n_stations - 1:
                 break
 
     return {
-        'mst_connections': mst_connections,
+        'kruskal_connections': kruskal_connections,
         'total_cost': total_cost,
-        'n_mst_connections': len(mst_connections),
+        'n_kruskal_connections': len(kruskal_connections),
         'n_original_connections': len(weighted_connections),
         'total_original_cost': total_original_cost,
     }
